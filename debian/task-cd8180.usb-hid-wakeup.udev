@@ -1,2 +1,6 @@
 # Enable Human Interface Device wakeup
-ACTION=="bind", SUBSYSTEM=="usb", ATTRS{bDeviceClass}=="00|03", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
+# Match HID interfaces (bInterfaceClass 03) and enable wakeup on the parent
+# USB device. Matching bDeviceClass 00 would enable it for almost every USB
+# device (storage, Wi-Fi, audio...), since most of them declare their class
+# per interface, and cause spurious wakeups.
+ACTION=="bind", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_interface", ATTR{bInterfaceClass}=="03", TEST=="../power/wakeup", RUN+="/bin/sh -c 'echo enabled > %S%p/../power/wakeup'"

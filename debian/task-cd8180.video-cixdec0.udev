@@ -1,1 +1,4 @@
-ACTION=="add" SUBSYSTEM=="video4linux" ENV{ID_V4L_PRODUCT}=="Linlon Video device" ENV{DEVLINKS}=="/dev/v4l/by-path/*-video-index0" SYMLINK+="video-cixdec0"
+# Symlinks are recomputed on every uevent: a rule limited to ACTION=="add"
+# would lose /dev/video-cixdec0 on the first "change" event.
+# DEVLINKS is a space separated list, hence the surrounding wildcards.
+ACTION!="remove", SUBSYSTEM=="video4linux", ENV{ID_V4L_PRODUCT}=="Linlon Video device", ENV{DEVLINKS}=="*/dev/v4l/by-path/*-video-index0*", SYMLINK+="video-cixdec0"

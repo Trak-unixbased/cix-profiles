@@ -1,2 +1,4 @@
 # Enable typec PD wakeup
-ACTION=="add", DRIVER=="rts5453h", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
+# DRIVER is only set once the device is bound: match "bind" for runtime
+# probing, and "add" for coldplug at boot.
+ACTION=="add|bind", DRIVER=="rts5453h", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
