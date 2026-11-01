@@ -4,7 +4,7 @@ set -e
 #DEBHELPER#
 
 case $1 in
-    remove)
+    remove|abort-install)
         conflicts="
         /usr/lib/modprobe.d/panfrost.conf
         "

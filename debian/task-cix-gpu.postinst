@@ -2,14 +2,28 @@
 
 set -e
 
+APP_DIR="/opt/cixgpu-compat"
+VENDOR_JSON="$APP_DIR/app.json.bak"
+RADXA_JSON="/usr/share/task-cix-gpu/radxa.json"
+
 case "$1" in
     configure|triggered)
-        cpp -P -E /opt/cixgpu-compat/app.json.bak > /opt/cixgpu-compat/app.json.tmp
-        jq -es '.[0].swrast.apps += .[1].swrast.apps | .[0]' \
-            /opt/cixgpu-compat/app.json.tmp \
-            /usr/share/task-cix-gpu/radxa.json \
-            > /opt/cixgpu-compat/app.json
-        rm /opt/cixgpu-compat/app.json.tmp
+        if [ ! -f "$VENDOR_JSON" ]; then
+            echo "task-cix-gpu: $VENDOR_JSON not found, skipping app.json generation" >&2
+        else
+            cpp -P -E "$VENDOR_JSON" > "$APP_DIR/app.json.tmp"
+            if jq -es '.[0].swrast.apps = ((.[0].swrast.apps // []) + .[1].swrast.apps) | .[0]' \
+                "$APP_DIR/app.json.tmp" \
+                "$RADXA_JSON" \
+                > "$APP_DIR/app.json.new"; then
+                mv -f "$APP_DIR/app.json.new" "$APP_DIR/app.json"
+            else
+                rm -f "$APP_DIR/app.json.new" "$APP_DIR/app.json.tmp"
+                echo "task-cix-gpu: failed to merge $RADXA_JSON into $VENDOR_JSON" >&2
+                exit 1
+            fi
+            rm -f "$APP_DIR/app.json.tmp"
+        fi
         ;;
 esac
 
