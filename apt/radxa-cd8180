@@ -1,7 +1,5 @@
+# Prefer CIX Chromium from the vendor repository on every supported release
+# (cd8180-bookworm, cd8180-trixie, cd8180-<ubuntu codename>, and their -test suites).
 Package: chromium*
-Pin: release a=cd8180-bookworm
-Pin-Priority: 1001
-
-Package: chromium*
-Pin: release a=cd8180-bookworm-test
+Pin: release a=cd8180-*
 Pin-Priority: 1001

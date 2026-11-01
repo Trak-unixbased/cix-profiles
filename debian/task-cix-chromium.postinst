@@ -2,6 +2,8 @@
 
 set -e
 
+MIMEAPPS="/usr/share/applications/gnome-mimeapps.list"
+
 case "$1" in
     configure|triggered)
         # XFCE default browser alternative
@@ -15,8 +17,14 @@ case "$1" in
                 gnome-www-browser \
                 /usr/bin/chromium 100
         # GNOME mimeapps list
-        if [ -f /usr/share/applications/gnome-mimeapps.list ]; then
-            sed -i.bak 's/=\(firefox-esr\.desktop\)/=chromium.desktop;\1/' /usr/share/applications/gnome-mimeapps.list
+        # Debian ships firefox-esr.desktop, Ubuntu ships firefox_firefox.desktop (snap)
+        # or firefox.desktop. Only back up the pristine file, so that prerm restores
+        # the original and not an already patched copy.
+        if [ -f "$MIMEAPPS" ]; then
+            if ! grep -qE '=chromium\.desktop;firefox' "$MIMEAPPS"; then
+                cp -p "$MIMEAPPS" "$MIMEAPPS.bak"
+            fi
+            sed -i -E 's/=(firefox(-esr|_firefox)?\.desktop)/=chromium.desktop;\1/' "$MIMEAPPS"
         fi
         ;;
 esac
