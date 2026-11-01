@@ -3,6 +3,6 @@
 /files
 /task-*/
 /*.debhelper.log
-/*.postrm.debhelper
+/*.debhelper
 /*.substvars
 /tmp

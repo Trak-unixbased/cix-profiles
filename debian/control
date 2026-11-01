@@ -15,8 +15,8 @@ Depends: cix-alsa-conf,
          cix-audio-dsp,
          ${misc:Depends},
 Recommends: cix-noe-umd,
-Description: Metapackages for CIX GStreamer
- This package provides CIX GStreamer.
+Description: Metapackages for CIX Audio
+ This package provides CIX Audio.
 
 Package: task-cix-chromium
 Architecture: all
